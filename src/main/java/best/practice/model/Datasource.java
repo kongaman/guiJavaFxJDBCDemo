@@ -4,9 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by timbuchalka on 9/12/16.
- */
 public class Datasource {
 
     public static final String DB_NAME = "music.db";
@@ -114,16 +111,16 @@ public class Datasource {
 
     private PreparedStatement queryArtist;
     private PreparedStatement queryAlbum;
-
-    private static Datasource instance = new Datasource();
-
-    private Datasource() {
-
-    }
-
-    public static Datasource getInstance() {
-        return instance;
-    }
+                                                           // Singleton
+    private static Datasource instance = new Datasource(); // <== Create the instance when the instance variable is declared,
+                                                           // this is thread-safe. If you lazily create the instance in the getInstance()
+    private Datasource() {                                 // Method it is possible that a thread get interrupted after the check for null
+                                                           // meanwhile a second thread could check for null and create the instance. Then
+    }                                                      // the first thread can run an create another instance. The app would then have
+                                                           // 2 instances which defeats the purpose of using a singleton in the first place.
+    public static Datasource getInstance() {               // if(instance == null) {
+        return instance;                                   // 		instance = new Datasource();
+    }                                                      // } would NOT be thread- safe
 
     public boolean open() {
         try {
@@ -375,18 +372,3 @@ public class Datasource {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -20,7 +20,7 @@ public class GuiApp extends Application {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() throws Exception {     // Runs before the start() method
         super.init();
         if(!Datasource.getInstance().open()) {
             System.out.println("FATAL ERROR: Couldn't connect to database");
@@ -29,7 +29,7 @@ public class GuiApp extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() throws Exception {     // Runs when the application is shutting down
         super.stop();
         Datasource.getInstance().close();
     }

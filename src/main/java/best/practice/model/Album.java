@@ -1,8 +1,5 @@
 package best.practice.model;
 
-/**
- * Created by timbuchalka on 9/12/16.
- */
 public class Album {
 
     private int id;
