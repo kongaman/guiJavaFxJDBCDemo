@@ -104,6 +104,9 @@ public class Datasource {
     public static final String QUERY_ALBUMS_BY_ARTIST_ID = "SELECT * FROM " + TABLE_ALBUMS + 
     		" WHERE " + COLUMN_ALBUM_ARTIST + " = ? ORDER BY " + COLUMN_ALBUM_NAME + " COLLATE NOCASE";
     
+    public static final String UPDATE_ARTIST_NAME = "UPDATE " + TABLE_ARTISTS + " SET " + COLUMN_ARTIST_NAME + " = ? "
+    		+ " WHERE " + COLUMN_ARTIST_ID + " = ?";
+    
 
     private Connection conn;
 
@@ -117,6 +120,7 @@ public class Datasource {
     private PreparedStatement queryAlbum;
     
     private PreparedStatement queryAlbumsForArtistId;
+    private PreparedStatement updateArtistName;
                                                            // Singleton
     private static Datasource instance = new Datasource(); // <== Create the instance when the instance variable is declared,
                                                            // this is thread-safe. If you lazily create the instance in the getInstance()
@@ -138,7 +142,7 @@ public class Datasource {
             queryArtist = conn.prepareStatement(QUERY_ARTIST);
             queryAlbum = conn.prepareStatement(QUERY_ALBUM);
             queryAlbumsForArtistId = conn.prepareStatement(QUERY_ALBUMS_BY_ARTIST_ID);
-
+            updateArtistName = conn.prepareStatement(UPDATE_ARTIST_NAME);
 
             return true;
         } catch (SQLException e) {
@@ -149,6 +153,9 @@ public class Datasource {
 
     public void close() {
         try {
+        	if(updateArtistName != null) {
+            	updateArtistName.close();
+            }
 
             if(queryAlbumsForArtistId != null) {
             	queryAlbumsForArtistId.close();
@@ -408,5 +415,18 @@ public class Datasource {
             }
 
         }
+    }
+    
+    public boolean updateArtistName(int id, String newName) {
+    	try {
+    		updateArtistName.setString(1, newName);
+    		updateArtistName.setInt(2, id);
+    		int affectedRecords = updateArtistName.executeUpdate();
+    		return affectedRecords == 1;
+			
+		} catch (SQLException e) {
+			System.out.println("Update failed: " + e.getMessage());
+			return false;
+		}
     }
 }

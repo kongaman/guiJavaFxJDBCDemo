@@ -51,6 +51,26 @@ public class Controller {
 		new Thread(task).start();
 	}
 	
+	@FXML
+	public void updateArtist() {
+		// final Artist artist = (Artist) artistTable.getSelectionModel().getSelectedItem();
+		final Artist artist = (Artist) artistTable.getItems().get(2); // normally we would use TableSelectionModel to get the selected
+		Task<Boolean> task = new Task<Boolean>() {                    // item but for keeping it simple it's hardcoded to select item 2
+			@Override                                                 // (3rd entry) which is "AC DC"
+			protected Boolean call() throws Exception {
+				return Datasource.getInstance().updateArtistName(artist.getId(), "AC/DC"); // name would normally be asked in a dialog
+			}                                                                              // to simplify the example we hardcode it.
+		};
+		task.setOnSucceeded(e -> {
+			if (task.valueProperty().get()) {
+				artist.setName("AC/DC");
+				artistTable.refresh();
+			}
+		});
+		
+		new Thread(task).start();
+	}
+	
 	
 }
 
